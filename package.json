@@ -1,0 +1,80 @@
+{
+  "name": "quickmock-wireframe-viewer",
+  "displayName": "QuickMock Wireframe Viewer",
+  "description": "VS Code extension for viewing QuickMock (.qm) low-fidelity UI wireframes",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.105.0"
+  },
+  "categories": [
+    "Visualization",
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "quickmock.wireframeViewer",
+        "displayName": "QuickMock Wireframe Viewer",
+        "selector": [
+          {
+            "filenamePattern": "*.qm"
+          }
+        ]
+      }
+    ],
+    "commands": [
+      {
+        "command": "quickmock.openWireframe",
+        "title": "Open with QuickMock Viewer",
+        "icon": "$(preview)"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "quickmock.openWireframe",
+          "when": "resourceExtname == .qm",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "npm run check-types && npm run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "npm run check-types && npm run lint && node esbuild.js --production",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "@types/vscode": "^1.105.0",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
+    "@typescript-eslint/parser": "^8.45.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "esbuild": "^0.25.10",
+    "esbuild-plugin-alias": "^0.2.1",
+    "eslint": "^9.36.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "konva": "^10.0.2",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-konva": "^19.0.10"
+  }
+}
