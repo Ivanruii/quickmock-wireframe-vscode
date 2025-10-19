@@ -18,3 +18,8 @@ All notable changes to the QuickMock Wireframe Viewer extension.
 - Multi-page wireframe documents
 - Zoom and pan functionality
 - Right-click context menu for .qm files
+
+## [0.1.1] - 2025-10-19
+
+- Minor bug fixes
+- Prepare for marketplace publication
