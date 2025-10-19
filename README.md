@@ -2,6 +2,8 @@
 
 A VSCode extension to view QuickMock (.qm) wireframe files.
 
+![QuickMock Wireframe Viewer Gif](./assets/demo-qm-vscode.gif)
+
 ## ✨ Features
 
 - Opens .qm files directly in VSCode
