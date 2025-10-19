@@ -1,5 +1,5 @@
 {
-  "name": "quickmock-wireframe-viewer",
+  "name": "quickmock-wireframe-vscode",
   "displayName": "QuickMock Wireframe Viewer",
   "description": "VS Code extension for viewing QuickMock (.qm) low-fidelity UI wireframes",
   "version": "0.1.0",
