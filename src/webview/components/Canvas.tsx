@@ -1,6 +1,6 @@
 import React from "react";
 import { Stage, Layer } from "react-konva";
-import { QuickMockDocument, Shape } from "@/core/model";
+import { QuickMockDocument, ShapeModel } from "@/core/model";
 import { renderShapeComponent } from "../../pods/canvas/shape-renderer";
 import { ShapeRendererProps } from "../../pods/canvas/shape-renderer/model";
 
@@ -56,15 +56,20 @@ export const Canvas: React.FC<CanvasProps> = ({
     );
   }
 
-  const renderShape = (shape: Shape) => {
-    const shapeRendererProps: ShapeRendererProps = {
-      handleSelected: undefined,
-      shapeRefs: undefined,
-      handleDragEnd: undefined,
-      handleTransform: undefined,
-    };
+  const renderShape = (shape: ShapeModel) => {
+    try {
+      const shapeRendererProps: ShapeRendererProps = {
+        handleSelected: undefined,
+        shapeRefs: undefined,
+        handleDragEnd: undefined,
+        handleTransform: undefined,
+      };
 
-    return renderShapeComponent(shape, shapeRendererProps);
+      return renderShapeComponent(shape, shapeRendererProps);
+    } catch (error) {
+      console.error(`Error rendering shape ${shape.id} of type ${shape.type}:`, error);
+      return null;
+    }
   };
 
   return (

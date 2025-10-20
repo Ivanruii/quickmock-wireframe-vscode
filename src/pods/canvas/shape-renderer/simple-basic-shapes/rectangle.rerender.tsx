@@ -1,10 +1,10 @@
 import React from "react";
-import { Shape } from "@/core/model";
+import { ShapeModel } from "@/core/model";
 import { ShapeRendererProps } from "../model";
 import { RectangleShape } from "@/common/mock-components/front-basic-shapes/index";
 
 export const renderRectangle = (
-  shape: Shape,
+  shape: ShapeModel,
   shapeRenderedProps: ShapeRendererProps
 ) => {
   const { ...otherProps } = shapeRenderedProps as any;

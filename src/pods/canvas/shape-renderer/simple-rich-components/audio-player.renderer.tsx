@@ -1,10 +1,10 @@
 import React from "react";
-import { Shape } from "@/core/model";
+import { ShapeModel } from "@/core/model";
 import { ShapeRendererProps } from "../model";
 import { AudioPlayerShape } from "@/common/mock-components/front-rich-components/audio-player-readonly";
 
 export const renderAudioPlayer = (
-  shape: Shape,
+  shape: ShapeModel,
   shapeRenderedProps: ShapeRendererProps
 ) => {
   const { x, y, width, height, text, otherProps } = shape;

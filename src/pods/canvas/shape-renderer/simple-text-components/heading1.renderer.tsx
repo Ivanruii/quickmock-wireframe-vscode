@@ -1,10 +1,10 @@
 import React from "react";
-import { Shape } from "@/core/model";
+import { ShapeModel } from "@/core/model";
 import { ShapeRendererProps } from "../model";
 import { Heading1Shape } from "@/common/mock-components/front-text-components/index";
 
 export const renderHeading1 = (
-  shape: Shape,
+  shape: ShapeModel,
   shapeRenderedProps: ShapeRendererProps
 ) => {
   const { ...otherProps } = shapeRenderedProps as any;

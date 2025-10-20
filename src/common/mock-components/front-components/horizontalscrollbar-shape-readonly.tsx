@@ -1,11 +1,9 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { Group, Line, Rect } from "react-konva";
-import {
-  ShapeProps,
-  ShapeSizeRestrictions,
-  SHAPE_CONSTANTS,
-} from "@/common/types";
+import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE } from "./shape.const";
+import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
 const HorizontalScrollBarShapeSizeRestrictions: ShapeSizeRestrictions = {
   minWidth: 100,
   minHeight: 10,
@@ -39,7 +37,8 @@ export const HorizontalScrollBarShape = forwardRef<any, ShapeProps>(
     const thumbWidth = restrictedWidth * 0.3;
     const thumbX =
       arrowWidth + (restrictedWidth - thumbWidth - arrowWidth * 2) / 2;
-    const stroke = otherProps?.stroke || SHAPE_CONSTANTS.DEFAULT_STROKE_COLOR;
+
+    const { stroke } = useShapeProps(otherProps, BASIC_SHAPE);
     const fill = otherProps?.fill || "#f0f0f0";
     return (
       <Group ref={ref} x={x} y={y} {...shapeProps}>
@@ -65,11 +64,11 @@ export const HorizontalScrollBarShape = forwardRef<any, ShapeProps>(
         />
         <Line
           points={[
-            arrowWidth - 6,
+            6,
             restrictedHeight / 2,
-            6,
+            arrowWidth - 6,
             restrictedHeight / 2 - 4,
-            6,
+            arrowWidth - 6,
             restrictedHeight / 2 + 4,
           ]}
           stroke="#666"
@@ -89,11 +88,11 @@ export const HorizontalScrollBarShape = forwardRef<any, ShapeProps>(
         />
         <Line
           points={[
-            restrictedWidth - arrowWidth + 6,
+            restrictedWidth - 6,
             restrictedHeight / 2,
-            restrictedWidth - 6,
+            restrictedWidth - arrowWidth + 6,
             restrictedHeight / 2 - 4,
-            restrictedWidth - 6,
+            restrictedWidth - arrowWidth + 6,
             restrictedHeight / 2 + 4,
           ]}
           stroke="#666"
@@ -104,13 +103,13 @@ export const HorizontalScrollBarShape = forwardRef<any, ShapeProps>(
         {/* Thumb */}
         <Rect
           x={thumbX}
-          y={2}
+          y={0}
           width={thumbWidth}
-          height={restrictedHeight - 4}
+          height={restrictedHeight}
           fill="#c0c0c0"
           stroke={stroke}
           strokeWidth={1}
-          cornerRadius={2}
+          cornerRadius={1}
         />
       </Group>
     );

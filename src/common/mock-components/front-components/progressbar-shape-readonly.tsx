@@ -1,11 +1,9 @@
-import React, { forwardRef, useMemo } from "react";
+import { forwardRef, useMemo } from "react";
 import { Group, Rect } from "react-konva";
-import {
-  ShapeProps,
-  ShapeSizeRestrictions,
-  SHAPE_CONSTANTS,
-} from "@/common/types";
+import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE } from "./shape.const";
+import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
 const progressBarShapeRestrictions: ShapeSizeRestrictions = {
   minWidth: 100,
   minHeight: 20,
@@ -34,11 +32,14 @@ export const ProgressBarShape = forwardRef<any, ShapeProps>((props, ref) => {
     height
   );
   const { width: restrictedWidth, height: restrictedHeight } = restrictedSize;
-  const progress = otherProps?.progress || 50; // 0-100
-  const borderRadius =
-    otherProps?.borderRadius || SHAPE_CONSTANTS.DEFAULT_BORDER_RADIUS;
+  
+  const { stroke, borderRadius, progress } = useShapeProps(
+    otherProps,
+    BASIC_SHAPE
+  );
+  
   const fill = otherProps?.fill || "#007ACC";
-  const stroke = otherProps?.stroke || SHAPE_CONSTANTS.DEFAULT_STROKE_COLOR;
+  
   const progressWidth = useMemo(
     () => (progress / 100) * restrictedWidth,
     [progress, restrictedWidth]

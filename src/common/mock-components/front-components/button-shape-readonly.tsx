@@ -1,11 +1,11 @@
-import React, { forwardRef } from "react";
-import { Group, Rect, Text } from "react-konva";
-import {
-  ShapeProps,
-  ShapeSizeRestrictions,
-  SHAPE_CONSTANTS,
-} from "@/common/types";
+import { ShapeSizeRestrictions } from "@/common/types";
+import { forwardRef } from "react";
+import { ShapeProps } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { Group, Rect, Text } from "react-konva";
+import { BASIC_SHAPE } from "./shape.const";
+import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
+
 const buttonShapeRestrictions: ShapeSizeRestrictions = {
   minWidth: 50,
   minHeight: 35,
@@ -14,8 +14,10 @@ const buttonShapeRestrictions: ShapeSizeRestrictions = {
   defaultWidth: 100,
   defaultHeight: 35,
 };
+
 export const getButtonShapeSizeRestrictions = (): ShapeSizeRestrictions =>
   buttonShapeRestrictions;
+
 export const ButtonShape = forwardRef<any, ShapeProps>((props, ref) => {
   const {
     x,
@@ -23,22 +25,30 @@ export const ButtonShape = forwardRef<any, ShapeProps>((props, ref) => {
     width,
     height,
     id,
-    onSelected,
     text = "Button",
     otherProps,
     ...shapeProps
   } = props;
+
   const restrictedSize = fitSizeToShapeSizeRestrictions(
     buttonShapeRestrictions,
     width,
     height
   );
+
   const { width: restrictedWidth, height: restrictedHeight } = restrictedSize;
-  const stroke = otherProps?.stroke || SHAPE_CONSTANTS.DEFAULT_STROKE_COLOR;
-  const fill = otherProps?.fill || SHAPE_CONSTANTS.DEFAULT_FILL_COLOR;
-  const textColor = otherProps?.textColor || SHAPE_CONSTANTS.DEFAULT_TEXT_COLOR;
-  const borderRadius =
-    otherProps?.borderRadius || SHAPE_CONSTANTS.DEFAULT_BORDER_RADIUS;
+
+  const {
+    stroke,
+    strokeStyle,
+    fill,
+    textColor,
+    borderRadius,
+    disabled,
+    fontSize,
+    strokeWidth,
+  } = useShapeProps(otherProps, BASIC_SHAPE);
+
   return (
     <Group ref={ref} x={x} y={y} {...shapeProps}>
       <Rect
@@ -47,20 +57,21 @@ export const ButtonShape = forwardRef<any, ShapeProps>((props, ref) => {
         width={restrictedWidth}
         height={restrictedHeight}
         cornerRadius={borderRadius}
-        stroke={stroke}
-        strokeWidth={1.5}
-        fill={fill}
+        stroke={disabled ? "#c0c0c0" : stroke}
+        dash={strokeStyle}
+        strokeWidth={strokeWidth}
+        fill={disabled ? "#f5f5f5" : fill}
       />
       <Text
         x={0}
-        y={(restrictedHeight - 15) / 2}
+        y={(restrictedHeight - fontSize) / 2}
         width={restrictedWidth}
         height={restrictedHeight - restrictedHeight / 2 - 5}
         text={text}
-        fontFamily={SHAPE_CONSTANTS.DEFAULT_FONT_FAMILY}
-        fontSize={15}
-        lineHeight={1.25}
-        fill={textColor}
+        fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
+        fontSize={fontSize}
+        lineHeight={BASIC_SHAPE.DEFAULT_LINE_HEIGHT}
+        fill={disabled ? "#808080" : textColor}
         align="center"
         ellipsis={true}
         wrap="none"

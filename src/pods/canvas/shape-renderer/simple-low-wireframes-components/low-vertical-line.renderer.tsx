@@ -1,10 +1,10 @@
 import React from "react";
-import { Shape } from "@/core/model";
+import { ShapeModel } from "@/core/model";
 import { ShapeRendererProps } from "../model";
 import { VerticalLineLowShape } from "@/common/mock-components/front-low-wireframes-components/vertical-line-low-shape-readonly";
 
 export const renderLowVerticalLine = (
-  shape: Shape,
+  shape: ShapeModel,
   shapeRenderedProps: ShapeRendererProps
 ) => {
   const { id, x, y, width, height, text, otherProps } = shape;

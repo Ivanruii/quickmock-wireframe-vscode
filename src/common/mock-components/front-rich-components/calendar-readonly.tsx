@@ -47,10 +47,29 @@ export const CalendarShape = forwardRef<any, ShapeProps>((props, ref) => {
 
   const { month, year, days } = getCurrentMonthDays(currentDate);
 
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const monthName = monthNames[month];
+
   const margin = 10;
   const headerHeight = 50;
+  const weekDaysHeight = 30;
   const dayBoxWidth = (restrictedWidth - margin * 2) / 7;
-  const dayBoxHeight = (restrictedHeight - headerHeight - 40) / days.length;
+  const availableCalendarHeight =
+    restrictedHeight - headerHeight - weekDaysHeight - margin * 3;
+  const dayBoxHeight = availableCalendarHeight / days.length;
 
   return (
     <Group x={x} y={y} {...restProps} ref={ref}>
@@ -85,12 +104,12 @@ export const CalendarShape = forwardRef<any, ShapeProps>((props, ref) => {
 
       {/* Month and Year */}
       <Text
-        x={margin + 20}
+        x={margin + 40}
         y={headerHeight / 3}
-        text={`${month} ${year}`}
-        width={restrictedWidth - margin - 20 - margin - 30}
+        text={`${monthName} ${year}`}
+        width={restrictedWidth - margin * 2 - 80}
         fontFamily="Arial"
-        fontSize={20}
+        fontSize={18}
         fill={textColor}
         align="center"
         ellipsis={true}
@@ -129,12 +148,14 @@ export const CalendarShape = forwardRef<any, ShapeProps>((props, ref) => {
       {["S", "M", "T", "W", "T", "F", "S"].map((day, i) => (
         <Text
           key={i}
-          x={35 + i * dayBoxWidth}
-          y={headerHeight + 20}
+          x={margin + i * dayBoxWidth}
+          y={headerHeight + 25}
           text={day}
+          width={dayBoxWidth}
           fontFamily="Arial"
-          fontSize={16}
+          fontSize={14}
           fill={textColor}
+          align="center"
         />
       ))}
 
@@ -143,12 +164,14 @@ export const CalendarShape = forwardRef<any, ShapeProps>((props, ref) => {
         week.map((day, colIndex) => (
           <Text
             key={`${rowIndex}-${colIndex}`}
-            x={35 + colIndex * dayBoxWidth}
-            y={headerHeight + 70 + rowIndex * dayBoxHeight}
-            text={day ? day.toString() : ""}
+            x={margin + colIndex * dayBoxWidth}
+            y={headerHeight + weekDaysHeight + 20 + rowIndex * dayBoxHeight}
+            text={day ? day.getDate().toString() : ""}
+            width={dayBoxWidth}
             fontFamily="Arial"
-            fontSize={16}
+            fontSize={14}
             fill={textColor}
+            align="center"
           />
         ))
       )}

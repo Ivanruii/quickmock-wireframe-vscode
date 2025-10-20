@@ -7,14 +7,239 @@ export interface QuickMockDocument {
     height: number;
   };
 }
-
 export interface Page {
   id: string;
   name: string;
-  shapes: Shape[];
+  shapes: ShapeModel[];
+}
+export interface ShapeSizeRestrictions {
+  minWidth: number;
+  minHeight: number;
+  maxWidth: number;
+  maxHeight: number;
+  defaultWidth: number;
+  defaultHeight: number;
 }
 
-export interface Shape {
+export type ShapeType =
+  | "multiple"
+  | "combobox"
+  | "input"
+  | "button"
+  | "checkbox"
+  | "textarea"
+  | "toggleswitch"
+  | "toggleLightDark"
+  | "progressbar"
+  | "listbox"
+  | "datepickerinput"
+  | "browser"
+  | "timepickerinput"
+  | "mobilePhone"
+  | "tablet"
+  | "modalDialog"
+  | "timepickerinput"
+  | "label"
+  | "radiobutton"
+  | "rectangle"
+  | "postit"
+  | "videoPlayer"
+  | "audioPlayer"
+  | "diamond"
+  | "icon"
+  | "horizontalLine"
+  | "verticalLine"
+  | "accordion"
+  | "pie"
+  | "horizontal-menu"
+  | "breadcrumb"
+  | "map"
+  | "circle"
+  | "star"
+  | "linechart"
+  | "heading1"
+  | "heading2"
+  | "heading3"
+  | "normaltext"
+  | "smalltext"
+  | "paragraph"
+  | "largeArrow"
+  | "bar"
+  | "triangle"
+  | "image"
+  | "vertical-menu"
+  | "horizontalScrollBar"
+  | "image"
+  | "calendar"
+  | "image"
+  | "table"
+  | "verticalScrollBar"
+  | "horizontalScrollBar"
+  | "modal"
+  | "modalCover"
+  | "tabsBar"
+  | "appBar"
+  | "appBar"
+  | "buttonBar"
+  | "tooltip"
+  | "slider"
+  | "chip"
+  | "link"
+  | "cilinder"
+  | "richtext"
+  | "loading-indicator"
+  | "videoconference"
+  | "richtext"
+  | "gauge"
+  | "imagePlaceholder"
+  | "horizontalLineLow"
+  | "verticalLineLow"
+  | "ellipseLow"
+  | "rectangleLow"
+  | "circleLow"
+  | "textScribbled"
+  | "paragraphScribbled"
+  | "fabButton"
+  | "fileTree";
+
+export const ShapeDisplayName: Record<ShapeType, string> = {
+  multiple: "multiple",
+  combobox: "Combobox",
+  input: "Input",
+  button: "Button",
+  checkbox: "Checkbox",
+  textarea: "Textarea",
+  toggleswitch: "Toggle Switch",
+  toggleLightDark: "Toggle Light/Dark",
+  progressbar: "Progress Bar",
+  listbox: "List Box",
+  datepickerinput: "Date Picker Input",
+  browser: "Browser",
+  timepickerinput: "Time Picker Input",
+  mobilePhone: "Mobile Phone",
+  tablet: "Tablet",
+  modalDialog: "Modal Dialog",
+  label: "Label",
+  radiobutton: "Radio Button",
+  rectangle: "Rectangle",
+  videoPlayer: "Video Player",
+  audioPlayer: "Audio Player",
+  diamond: "Diamond",
+  horizontalLine: "Horizontal Line",
+  verticalLine: "Vertical Line",
+  accordion: "Accordion",
+  pie: "Pie",
+  breadcrumb: "Breadcrumb",
+  map: "Map",
+  circle: "Circle",
+  star: "Star",
+  postit: "Post-it",
+  linechart: "Line",
+  heading1: "Heading 1",
+  heading2: "Heading 2",
+  heading3: "Heading 3",
+  normaltext: "Normal text",
+  smalltext: "Small text",
+  paragraph: "Paragraph",
+  link: "Link",
+  triangle: "Triangle",
+  "horizontal-menu": "Horizontal Menu",
+  largeArrow: "Large Arrow",
+  icon: "Icon",
+  bar: "Bar Chart",
+  image: "Image",
+  "vertical-menu": "Vertical Menu",
+  table: "Table",
+  horizontalScrollBar: "Horizontal Scroll Bar",
+  calendar: "Calendar",
+  verticalScrollBar: "Vertical Scroll Bar",
+  modal: "Modal",
+  modalCover: "Modal Cover",
+  tabsBar: "Tabs Bar",
+  appBar: "AppBar",
+  buttonBar: "Button Bar",
+  tooltip: "Tooltip",
+  slider: "Slider",
+  chip: "Chip",
+  richtext: "Rich Text",
+  cilinder: "Cilinder",
+  "loading-indicator": "Loading",
+  videoconference: "Videoconference",
+  gauge: "Gauge",
+  imagePlaceholder: "Image Placeholder",
+  horizontalLineLow: "Horizontal Divider",
+  verticalLineLow: "Vertical Divider",
+  ellipseLow: "Ellipse",
+  rectangleLow: "Rectangle Placeholder",
+  circleLow: "Circle",
+  textScribbled: "Text Scribbled",
+  paragraphScribbled: "Paragraph Scribbled",
+  fabButton: "Fab Button",
+  fileTree: "File Tree",
+};
+
+export type EditType = "input" | "textarea" | "imageupload";
+
+export type ShapeRefs = {
+  [key: string]: React.RefObject<any>;
+};
+
+export interface Size {
+  width: number;
+  height: number;
+}
+
+export interface Coord {
+  x: number;
+  y: number;
+}
+
+export type Category = "IT" | "business" | "Ecommerce" | "Emojis";
+
+export interface IconInfo {
+  name: string;
+  filename: string;
+  searchTerms: string[];
+  categories: Category[];
+}
+
+export type IconSize = "XS" | "S" | "M" | "L" | "XL";
+
+export type ElementSize = "XS" | "S" | "M" | "L" | "XL";
+
+export interface SizeConfig {
+  availableSizes: ElementSize[];
+}
+
+export interface OtherProps {
+  stroke?: string;
+  strokeStyle?: number[];
+  strokeWidth?: number;
+  backgroundColor?: string;
+  textColor?: string;
+  fontVariant?: string;
+  fontStyle?: string;
+  fontSize?: number;
+  textDecoration?: string;
+  checked?: boolean;
+  icon?: IconInfo;
+  iconSize?: IconSize;
+  size?: ElementSize;
+  imageSrc?: string;
+  imageBlackAndWhite?: boolean;
+  progress?: string;
+  borderRadius?: string;
+  activeElement?: number;
+  selectedBackgroundColor?: string;
+  textAlignment?: "left" | "center" | "right";
+  disabled?: boolean;
+  isPlaceholder?: boolean;
+  isPassword?: boolean;
+}
+
+export const BASE_ICONS_URL = "/icons/";
+
+export interface ShapeModel {
   id: string;
   x: number;
   y: number;
@@ -23,123 +248,7 @@ export interface Shape {
   type: ShapeType;
   allowsInlineEdition: boolean;
   typeOfTransformer: string[];
+  editType?: EditType;
   text?: string;
-  editType?: string;
-  otherProps?: ShapeProps;
-}
-
-export type ShapeType =
-  | "browser"
-  | "heading1"
-  | "heading2"
-  | "heading3"
-  | "richtext"
-  | "normaltext"
-  | "smalltext"
-  | "link"
-  | "paragraph"
-  | "text"
-  | "button"
-  | "input"
-  | "label"
-  | "textarea"
-  | "checkbox"
-  | "radiobutton"
-  | "rectangle"
-  | "rectangleLow"
-  | "horizontalLine"
-  | "horizontalLineLow"
-  | "verticalLine"
-  | "verticalLineLow"
-  | "circle"
-  | "circleLow"
-  | "ellipseLow"
-  | "diamond"
-  | "triangle"
-  | "star"
-  | "largeArrow"
-  | "image"
-  | "imagePlaceholder"
-  | "cylinder"
-  | "cilinder"
-  | "modalCover"
-  | "postit"
-  | "icon"
-  | "fabButton"
-  | "listbox"
-  | "combobox"
-  | "progressbar"
-  | "slider"
-  | "toggleswitch"
-  | "tooltip"
-  | "chip"
-  | "horizontalscrollbar"
-  | "verticalscrollbar"
-  | "horizontalScrollBar"
-  | "verticalScrollBar"
-  | "scrollbar"
-  | "datepickerinput"
-  | "timepickerinput"
-  | "notfound"
-  | "mobilephonecontainer"
-  | "mobilePhone"
-  | "modaldialogcontainer"
-  | "modalDialog"
-  | "tablet"
-  | "accordion"
-  | "appBar"
-  | "audioPlayer"
-  | "barChart"
-  | "bar"
-  | "breadcrumb"
-  | "buttonBar"
-  | "calendar"
-  | "fileTree"
-  | "gauge"
-  | "horizontalMenu"
-  | "horizontal-menu"
-  | "lineChart"
-  | "linechart"
-  | "loadingIndicator"
-  | "loading-indicator"
-  | "mapChart"
-  | "map"
-  | "modal"
-  | "pieChart"
-  | "pie"
-  | "table"
-  | "tabsbar"
-  | "tabsBar"
-  | "toggleLightDark"
-  | "verticalMenu"
-  | "vertical-menu"
-  | "videoPlayer"
-  | "videoconference"
-  | "textScribbled"
-  | "paragraphScribbled";
-
-export interface ShapeProps {
-  textColor?: string;
-  fontVariant?: string;
-  fontStyle?: string;
-  textDecoration?: string;
-  fontSize?: number;
-  textAlignment?: string;
-
-  stroke?: string;
-  backgroundColor?: string;
-  strokeStyle?: string[];
-  strokeWidth?: number;
-  borderRadius?: string;
-  disabled?: boolean;
-
-  icon?: {
-    name: string;
-    filename: string;
-    searchTerms: string[];
-    categories: string[];
-  };
-  iconSize?: string;
-
-  selectedBackgroundColor?: string;
+  otherProps?: OtherProps;
 }

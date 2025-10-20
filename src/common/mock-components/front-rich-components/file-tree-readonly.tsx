@@ -1,30 +1,24 @@
-import { forwardRef, useMemo } from "react";
-import { Group, Rect, Text } from "react-konva";
-import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
+import { ShapeSizeRestrictions, ShapeProps } from "@/common/types";
+import { forwardRef, useEffect, useMemo, useState } from "react";
+import { Group, Image, Rect, Text } from "react-konva";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
+import { BASIC_SHAPE } from "../front-components/shape.const";
 
-const FileTreeSizeRestrictions: ShapeSizeRestrictions = {
-  minWidth: 200,
-  minHeight: 150,
-  maxWidth: 400,
-  maxHeight: -1,
-  defaultWidth: 250,
-  defaultHeight: 300,
-};
+interface FileTreeItem {
+  text: string;
+  level: number;
+  type: "folder" | "subfolder" | "file";
+}
 
-export const getFileTreeSizeRestrictions = (): ShapeSizeRestrictions =>
-  FileTreeSizeRestrictions;
-
-// Parse text format: "+ Folder 1\n   - Subfolder\n      * File"
-// + = folder, - = subfolder/folder, * = file
-const parseFileTree = (text: string) => {
+const parseFileTreeText = (text: string): FileTreeItem[] => {
   if (!text) return [];
 
   const lines = text.split("\n");
   return lines.filter(Boolean).map((line) => {
     let level = 0;
     let content = line;
-    let type = "file";
+    let type: "folder" | "subfolder" | "file" = "file";
 
     const match = line.match(/^(\s*)([\+\-\*])\s*(.*)/);
     if (match) {
@@ -33,107 +27,257 @@ const parseFileTree = (text: string) => {
       content = (match[3] || "").trim();
 
       if (symbol === "+") type = "folder";
-      else if (symbol === "-") type = "folder";
+      else if (symbol === "-") type = "subfolder";
       else type = "file";
     }
 
     return {
-      name: content,
+      text: content,
       level,
-      expanded: true,
       type,
     };
   });
 };
 
-export const FileTreeShape = forwardRef<any, ShapeProps>((props, ref) => {
-  const { x, y, width, height, id, text, otherProps, ...restProps } = props;
+const getFileTreeSizeValues = (size?: string) => {
+  const isSmall = size === "small";
+  return {
+    fontSize: isSmall ? 10 : 12,
+    iconDimension: isSmall ? 12 : 16,
+    elementHeight: isSmall ? 18 : 24,
+    extraTextTopPadding: isSmall ? 3 : 4,
+    paddingX: isSmall ? 6 : 8,
+    paddingY: isSmall ? 4 : 6,
+    iconTextSpacing: isSmall ? 4 : 6,
+    indentationStep: isSmall ? 12 : 16,
+  };
+};
 
-  const restrictedSize = fitSizeToShapeSizeRestrictions(
-    FileTreeSizeRestrictions,
+const calculateFileTreeDynamicSize = (
+  items: FileTreeItem[],
+  config: {
+    width: number;
+    height: number;
+    elementHeight: number;
+    paddingY: number;
+    paddingX: number;
+    iconDimension: number;
+    indentationStep: number;
+    baseRestrictions: ShapeSizeRestrictions;
+  }
+) => {
+  const { elementHeight, paddingY, baseRestrictions, width, height } = config;
+
+  const calculatedHeight = Math.max(
+    items.length * elementHeight + paddingY * 2,
+    baseRestrictions.minHeight
+  );
+
+  return fitSizeToShapeSizeRestrictions(
+    {
+      ...baseRestrictions,
+      defaultHeight: calculatedHeight,
+    },
     width,
     height
   );
+};
 
-  const { width: restrictedWidth, height: restrictedHeight } = restrictedSize;
+const loadSvgWithFill = async (
+  path: string,
+  fill: string
+): Promise<HTMLImageElement | null> => {
+  try {
+    const canvas = document.createElement("canvas");
+    canvas.width = 16;
+    canvas.height = 16;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.fillStyle = fill;
+      if (path.includes("folder")) {
+        ctx.fillRect(2, 6, 12, 8);
+        ctx.fillRect(2, 6, 6, 2);
+      } else if (path.includes("open")) {
+        ctx.fillRect(2, 4, 12, 10);
+        ctx.fillRect(2, 4, 8, 2);
+      } else {
+        ctx.fillRect(4, 2, 8, 12);
+      }
+    }
 
-  const backgroundColor = otherProps?.backgroundColor || "#ffffff";
-  const stroke = otherProps?.stroke || "#e0e0e0";
-  const textColor = otherProps?.textColor || "#333";
+    const img = new window.Image();
+    img.src = canvas.toDataURL();
+    return new Promise((resolve) => {
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null);
+    });
+  } catch {
+    return null;
+  }
+};
 
-  const treeItems = useMemo(() => parseFileTree(text || ""), [text]);
+const useGroupShapeProps = (
+  props: ShapeProps,
+  restrictedSize: { width: number; height: number },
+  shapeType: string,
+  ref: any
+) => {
+  const { x, y } = props;
+  return {
+    ref,
+    x,
+    y,
+  };
+};
 
-  if (treeItems.length === 0) {
+const fileTreeShapeRestrictions: ShapeSizeRestrictions = {
+  minWidth: 150,
+  minHeight: 50,
+  maxWidth: -1,
+  maxHeight: -1,
+  defaultWidth: 230,
+  defaultHeight: 180,
+};
+
+interface FileTreeShapeProps extends ShapeProps {
+  text: string;
+}
+
+const shapeType = "fileTree";
+
+export const getFileTreeShapeSizeRestrictions = (): ShapeSizeRestrictions =>
+  fileTreeShapeRestrictions;
+
+export const FileTreeShape = forwardRef<any, FileTreeShapeProps>(
+  (props, ref) => {
+    const {
+      x,
+      y,
+      width,
+      height,
+      id,
+      onSelected,
+      text,
+      otherProps,
+      ...shapeProps
+    } = props;
+
+    const treeItems = useMemo(() => {
+      return parseFileTreeText(text || "");
+    }, [text]);
+
+    const [icons, setIcons] = useState<Record<string, HTMLImageElement | null>>(
+      {
+        folder: null,
+        subfolder: null,
+        file: null,
+      }
+    );
+
+    const {
+      fontSize,
+      iconDimension,
+      elementHeight,
+      extraTextTopPadding,
+      paddingX,
+      paddingY,
+      iconTextSpacing,
+      indentationStep,
+    } = useMemo(
+      () => getFileTreeSizeValues(otherProps?.size),
+      [otherProps?.size]
+    );
+
+    const restrictedSize = calculateFileTreeDynamicSize(treeItems, {
+      width,
+      height,
+      elementHeight,
+      paddingY,
+      paddingX,
+      iconDimension,
+      indentationStep,
+      baseRestrictions: fileTreeShapeRestrictions,
+    });
+
+    const { width: restrictedWidth, height: restrictedHeight } = restrictedSize;
+
+    const { stroke, strokeStyle, fill, textColor, borderRadius } =
+      useShapeProps(otherProps, BASIC_SHAPE);
+
+    const commonGroupProps = useGroupShapeProps(
+      props,
+      restrictedSize,
+      shapeType,
+      ref
+    );
+
+    const calculateIconX = (item: FileTreeItem) => {
+      return paddingX + item.level * indentationStep;
+    };
+
+    const calculateTextX = (item: FileTreeItem) => {
+      return calculateIconX(item) + iconDimension + iconTextSpacing;
+    };
+
+    const calculateAvailableWidth = (item: FileTreeItem) => {
+      return restrictedWidth - calculateTextX(item) - paddingX;
+    };
+
+    useEffect(() => {
+      Promise.all([
+        loadSvgWithFill("/icons/folder.svg", stroke),
+        loadSvgWithFill("/icons/open.svg", stroke),
+        loadSvgWithFill("/icons/new.svg", stroke),
+      ]).then(([folder, subfolder, file]) => {
+        setIcons({
+          folder,
+          subfolder,
+          file,
+        });
+      });
+    }, [stroke]);
+
     return (
-      <Group x={x} y={y} {...restProps} ref={ref}>
+      <Group {...commonGroupProps} {...shapeProps}>
+        {/* Container */}
         <Rect
           x={0}
           y={0}
           width={restrictedWidth}
           height={restrictedHeight}
-          fill={backgroundColor}
           stroke={stroke}
-          strokeWidth={1}
+          strokeWidth={2}
+          fill={fill}
+          dash={strokeStyle}
+          cornerRadius={borderRadius}
         />
-        <Text
-          x={16}
-          y={restrictedHeight / 2 - 8}
-          text="No items"
-          fontSize={12}
-          fill="#999"
-          fontFamily="Arial"
-        />
+
+        {treeItems.map((item, index) => (
+          <Group key={index}>
+            {icons[item.type] && (
+              <Image
+                image={icons[item.type]!}
+                x={calculateIconX(item)}
+                y={paddingY + elementHeight * index}
+                width={iconDimension}
+                height={iconDimension}
+              />
+            )}
+            <Text
+              x={calculateTextX(item)}
+              y={paddingY + elementHeight * index + extraTextTopPadding}
+              text={item.text}
+              width={calculateAvailableWidth(item)}
+              height={elementHeight}
+              fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
+              fontSize={fontSize}
+              fill={textColor}
+              wrap="none"
+              ellipsis={true}
+            />
+          </Group>
+        ))}
       </Group>
     );
   }
-
-  const itemHeight = 24;
-
-  return (
-    <Group x={x} y={y} {...restProps} ref={ref}>
-      {/* Tree background */}
-      <Rect
-        x={0}
-        y={0}
-        width={restrictedWidth}
-        height={restrictedHeight}
-        fill={backgroundColor}
-        stroke={stroke}
-        strokeWidth={1}
-      />
-
-      {/* Tree items */}
-      {treeItems.map((item, index) => {
-        const itemY = index * itemHeight;
-        const indent = item.level * 16;
-
-        return (
-          <Group key={index}>
-            {/* Item icon (folder or file) */}
-            <Text
-              x={8 + indent}
-              y={itemY + (itemHeight - 14) / 2}
-              text={item.type === "folder" ? "📁" : "📄"}
-              fontSize={14}
-              fill={textColor}
-              fontFamily="Arial"
-            />
-
-            {/* Item name */}
-            <Text
-              x={28 + indent}
-              y={itemY + (itemHeight - 12) / 2}
-              text={item.name}
-              fontSize={12}
-              fill={textColor}
-              fontFamily="Arial"
-              wrap="none"
-              ellipsis={true}
-              width={restrictedWidth - 40 - indent}
-            />
-          </Group>
-        );
-      })}
-    </Group>
-  );
-});
+);

@@ -1,11 +1,9 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { Group, Rect, Line, Text } from "react-konva";
-import {
-  ShapeProps,
-  ShapeSizeRestrictions,
-  SHAPE_CONSTANTS,
-} from "@/common/types";
+import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE } from "./shape.const";
+import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
 const CHECKBOX_DEFAULT_HEIGHT = 20;
 const checkBoxShapeRestrictions: ShapeSizeRestrictions = {
   minWidth: 100,
@@ -39,9 +37,8 @@ export const CheckBoxShape = forwardRef<any, ShapeProps>((props, ref) => {
     height
   );
   const { width: restrictedWidth, height: restrictedHeight } = restrictedSize;
-  const isOn = otherProps?.isOn || false;
-  const textColor = otherProps?.textColor || SHAPE_CONSTANTS.DEFAULT_TEXT_COLOR;
-  const stroke = otherProps?.stroke || SHAPE_CONSTANTS.DEFAULT_STROKE_COLOR;
+  
+  const { stroke, textColor, isOn } = useShapeProps(otherProps, BASIC_SHAPE);
   return (
     <Group ref={ref} x={x} y={y} {...shapeProps}>
       <Rect
@@ -49,7 +46,7 @@ export const CheckBoxShape = forwardRef<any, ShapeProps>((props, ref) => {
         y={0}
         width={boxTickWidth}
         height={restrictedHeight}
-        cornerRadius={SHAPE_CONSTANTS.DEFAULT_BORDER_RADIUS}
+        cornerRadius={BASIC_SHAPE.DEFAULT_CORNER_RADIUS}
         stroke={stroke}
         strokeWidth={1}
         fill="white"
@@ -78,7 +75,7 @@ export const CheckBoxShape = forwardRef<any, ShapeProps>((props, ref) => {
         width={restrictedWidth - boxTickWidth - 10}
         height={restrictedHeight - marginText}
         text={text}
-        fontFamily={SHAPE_CONSTANTS.DEFAULT_FONT_FAMILY}
+        fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
         fontSize={15}
         fill={textColor}
         align="left"

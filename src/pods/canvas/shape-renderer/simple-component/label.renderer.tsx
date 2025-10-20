@@ -1,10 +1,10 @@
 import React from "react";
 import { Text } from "react-konva";
-import { Shape } from "@/core/model";
+import { ShapeModel } from "@/core/model";
 import { ShapeRendererProps } from "../model";
 
 export const renderLabel = (
-  shape: Shape,
+  shape: ShapeModel,
   shapeRenderedProps: ShapeRendererProps
 ) => {
   const { ...otherProps } = shapeRenderedProps as any;

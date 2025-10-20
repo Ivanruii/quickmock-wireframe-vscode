@@ -1,14 +1,14 @@
 import React from "react";
-import { Shape } from "@/core/model";
+import { ShapeModel } from "@/core/model";
 import { ShapeRendererProps } from "../model";
-import { SvgIcon } from "@/common/mock-components/front-components/icon-shape-readonly";
+import { IconShape } from "@/common/mock-components/front-components/icon-shape-readonly";
 
 export const renderIcon = (
-  shape: Shape,
+  shape: ShapeModel,
   shapeRenderedProps: ShapeRendererProps
 ) => {
   return (
-    <SvgIcon
+    <IconShape
       id={shape.id}
       x={shape.x}
       y={shape.y}

@@ -1,11 +1,9 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { Group, Circle, Text } from "react-konva";
-import {
-  ShapeProps,
-  ShapeSizeRestrictions,
-  SHAPE_CONSTANTS,
-} from "@/common/types";
+import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE } from "./shape.const";
+import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
 const RADIO_BUTTON_DEFAULT_HEIGHT = 18;
 const radioButtonShapeRestrictions: ShapeSizeRestrictions = {
   minWidth: 50,
@@ -36,9 +34,8 @@ export const RadioButtonShape = forwardRef<any, ShapeProps>((props, ref) => {
   );
   const { width: restrictedWidth, height: restrictedHeight } = restrictedSize;
   const radius = restrictedHeight / 2;
-  const isOn = otherProps?.isOn || false;
-  const textColor = otherProps?.textColor || SHAPE_CONSTANTS.DEFAULT_TEXT_COLOR;
-  const stroke = otherProps?.stroke || SHAPE_CONSTANTS.DEFAULT_STROKE_COLOR;
+  
+  const { textColor, stroke, isOn } = useShapeProps(otherProps, BASIC_SHAPE);
   return (
     <Group ref={ref} x={x} y={y} {...shapeProps}>
       {/* Outer circle radio button */}
@@ -60,8 +57,8 @@ export const RadioButtonShape = forwardRef<any, ShapeProps>((props, ref) => {
         width={restrictedWidth - restrictedHeight - 10}
         height={restrictedHeight - 3}
         text={text}
-        fontFamily={SHAPE_CONSTANTS.DEFAULT_FONT_FAMILY}
-        fontSize={15}
+        fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
+        fontSize={13}
         fill={textColor}
         align="left"
         verticalAlign="middle"

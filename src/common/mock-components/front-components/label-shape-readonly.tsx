@@ -1,11 +1,12 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { Group, Text } from "react-konva";
 import {
   ShapeProps,
   ShapeSizeRestrictions,
-  SHAPE_CONSTANTS,
 } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE } from "./shape.const";
+import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
 const labelSizeRestrictions: ShapeSizeRestrictions = {
   minWidth: 40,
   minHeight: 20,
@@ -34,7 +35,8 @@ export const LabelShape = forwardRef<any, ShapeProps>((props, ref) => {
     height
   );
   const { width: restrictedWidth, height: restrictedHeight } = restrictedSize;
-  const textColor = otherProps?.textColor || SHAPE_CONSTANTS.DEFAULT_TEXT_COLOR;
+  
+  const { textColor, fontSize } = useShapeProps(otherProps, BASIC_SHAPE);
   return (
     <Group ref={ref} x={x} y={y} {...shapeProps}>
       <Text
@@ -43,8 +45,8 @@ export const LabelShape = forwardRef<any, ShapeProps>((props, ref) => {
         width={restrictedWidth}
         height={restrictedHeight}
         text={text}
-        fontFamily={SHAPE_CONSTANTS.DEFAULT_FONT_FAMILY}
-        fontSize={15}
+        fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
+        fontSize={fontSize}
         fill={textColor}
         align="center"
         verticalAlign="middle"

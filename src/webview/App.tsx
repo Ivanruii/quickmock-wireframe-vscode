@@ -32,8 +32,10 @@ export const App: React.FC = () => {
 
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
+      console.log("Received message:", message.type, message);
       switch (message.type) {
         case "documentUpdate":
+          console.log("Setting document:", message.document);
           setDocument(message.document);
           setError(null);
           setIsLoading(false);
@@ -46,6 +48,8 @@ export const App: React.FC = () => {
           setError(message.message);
           setIsLoading(false);
           break;
+        default:
+          console.warn("Unknown message type:", message.type);
       }
     };
 

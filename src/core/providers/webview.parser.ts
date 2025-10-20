@@ -1,4 +1,4 @@
-import { QuickMockDocument, Page, Shape } from "@/core/model";
+import { QuickMockDocument, Page, ShapeModel } from "@/core/model";
 
 export const parseQuickMockDocument = (content: string): QuickMockDocument => {
   try {
@@ -75,7 +75,7 @@ const validateShapes = (shapes: any[], pageId: string): void => {
   }
 };
 
-const isValidShape = (shape: any): shape is Shape => {
+const isValidShape = (shape: any): shape is ShapeModel => {
   return (
     shape &&
     typeof shape.id === "string" &&

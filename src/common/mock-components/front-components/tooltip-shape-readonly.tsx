@@ -1,11 +1,9 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { Group, Rect, Text, Line } from "react-konva";
-import {
-  ShapeProps,
-  ShapeSizeRestrictions,
-  SHAPE_CONSTANTS,
-} from "@/common/types";
+import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE } from "./shape.const";
+import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
 const tooltipShapeRestrictions: ShapeSizeRestrictions = {
   minWidth: 80,
   minHeight: 70,
@@ -34,18 +32,21 @@ export const TooltipShape = forwardRef<any, ShapeProps>((props, ref) => {
     height
   );
   const { width: restrictedWidth, height: restrictedHeight } = restrictedSize;
-  const stroke = otherProps?.stroke || SHAPE_CONSTANTS.DEFAULT_STROKE_COLOR;
-  const fill = otherProps?.fill || "#333333";
-  const textColor = otherProps?.textColor || "#FFFFFF";
+
+  const { stroke, borderRadius, fontSize, fill, textColor } = useShapeProps(
+    otherProps,
+    BASIC_SHAPE
+  );
+
   const pointerHeight = 15;
   const pointerWidth = 20;
   const mainRectHeight = restrictedHeight - pointerHeight;
   const trianglePoints = [
-    restrictedWidth / 2 - pointerWidth / 2,
+    0, // Left edge of triangle (pegado a la esquina)
     mainRectHeight,
-    restrictedWidth / 2,
+    0, // Borde izquierdo recto (mismo x)
     restrictedHeight,
-    restrictedWidth / 2 + pointerWidth / 2,
+    pointerWidth, // Right edge of triangle
     mainRectHeight,
   ];
   return (
@@ -59,7 +60,7 @@ export const TooltipShape = forwardRef<any, ShapeProps>((props, ref) => {
         fill={fill}
         stroke={stroke}
         strokeWidth={1}
-        cornerRadius={SHAPE_CONSTANTS.DEFAULT_BORDER_RADIUS}
+        cornerRadius={borderRadius}
       />
       {/* Tooltip text */}
       <Text
@@ -68,8 +69,8 @@ export const TooltipShape = forwardRef<any, ShapeProps>((props, ref) => {
         width={restrictedWidth - 20}
         height={mainRectHeight - 20}
         text={text}
-        fontFamily={SHAPE_CONSTANTS.DEFAULT_FONT_FAMILY}
-        fontSize={12}
+        fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
+        fontSize={fontSize}
         lineHeight={1.25}
         fill={textColor}
         verticalAlign="middle"

@@ -1,10 +1,10 @@
 import React from "react";
-import { Shape } from "@/core/model";
+import { ShapeModel } from "@/core/model";
 import { ShapeRendererProps } from "../model";
 import { CalendarShape } from "@/common/mock-components/front-rich-components/calendar-readonly";
 
 export const renderCalendar = (
-  shape: Shape,
+  shape: ShapeModel,
   shapeRenderedProps: ShapeRendererProps
 ) => {
   const { x, y, width, height, text, otherProps } = shape;

@@ -1,10 +1,10 @@
 import React from "react";
-import { Shape } from "@/core/model";
+import { ShapeModel } from "@/core/model";
 import { ShapeRendererProps } from "../model";
 import { VideoPlayerShape } from "@/common/mock-components/front-rich-components/video-player-readonly";
 
 export const renderVideoPlayer = (
-  shape: Shape,
+  shape: ShapeModel,
   shapeRenderedProps: ShapeRendererProps
 ) => {
   const { x, y, width, height, text, otherProps } = shape;

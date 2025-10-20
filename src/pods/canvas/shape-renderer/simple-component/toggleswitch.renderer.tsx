@@ -1,14 +1,14 @@
 import React from "react";
-import { Shape } from "@/core/model";
+import { ShapeModel } from "@/core/model";
 import { ShapeRendererProps } from "../model";
-import { ToggleSwitch } from "@/common/mock-components/front-components/toggleswitch-shape-readonly";
+import { ToggleSwitchShape } from "@/common/mock-components/front-components/toggleswitch-shape-readonly";
 
 export const renderToggleSwitch = (
-  shape: Shape,
+  shape: ShapeModel,
   shapeRenderedProps: ShapeRendererProps
 ) => {
   return (
-    <ToggleSwitch
+    <ToggleSwitchShape
       id={shape.id}
       x={shape.x}
       y={shape.y}

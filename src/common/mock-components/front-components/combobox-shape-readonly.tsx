@@ -1,11 +1,9 @@
-import React, { forwardRef } from "react";
-import { Group, Rect, Text, Line } from "react-konva";
-import {
-  ShapeProps,
-  ShapeSizeRestrictions,
-  SHAPE_CONSTANTS,
-} from "@/common/types";
+import { forwardRef } from "react";
+import { Group, Rect, Text, Path, Line } from "react-konva";
+import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE } from "./shape.const";
+import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
 const comboBoxShapeRestrictions: ShapeSizeRestrictions = {
   minWidth: 85,
   minHeight: 38,
@@ -34,11 +32,9 @@ export const ComboBoxShape = forwardRef<any, ShapeProps>((props, ref) => {
     height
   );
   const { width: restrictedWidth, height: restrictedHeight } = restrictedSize;
-  const stroke = otherProps?.stroke || SHAPE_CONSTANTS.DEFAULT_STROKE_COLOR;
-  const fill = otherProps?.fill || SHAPE_CONSTANTS.DEFAULT_FILL_COLOR;
-  const textColor = otherProps?.textColor || SHAPE_CONSTANTS.DEFAULT_TEXT_COLOR;
-  const borderRadius =
-    otherProps?.borderRadius || SHAPE_CONSTANTS.DEFAULT_BORDER_RADIUS;
+  
+  const { stroke, fill, textColor, borderRadius } = useShapeProps(otherProps, BASIC_SHAPE);
+  
   const arrowSize = 6;
   const arrowX = restrictedWidth - 15;
   const arrowY = restrictedHeight / 2;
@@ -59,7 +55,7 @@ export const ComboBoxShape = forwardRef<any, ShapeProps>((props, ref) => {
         y={10}
         width={restrictedWidth - 30}
         text={text}
-        fontFamily={SHAPE_CONSTANTS.DEFAULT_FONT_FAMILY}
+        fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
         fontSize={16}
         lineHeight={1.25}
         fill={textColor}

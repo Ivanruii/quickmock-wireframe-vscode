@@ -1,10 +1,10 @@
 import React from "react";
-import { Shape } from "@/core/model";
+import { ShapeModel } from "@/core/model";
 import { ShapeRendererProps } from "../model";
 import { ParagraphScribbledShape } from "@/common/mock-components/front-low-wireframes-components/paragraph-scribbled-shape-readonly";
 
 export const renderParagraphScribbled = (
-  shape: Shape,
+  shape: ShapeModel,
   shapeRenderedProps: ShapeRendererProps
 ) => {
   const { id, x, y, width, height, text, otherProps } = shape;

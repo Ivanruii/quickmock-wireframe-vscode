@@ -1,11 +1,9 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { Group, Rect, Text } from "react-konva";
-import {
-  ShapeProps,
-  ShapeSizeRestrictions,
-  SHAPE_CONSTANTS,
-} from "@/common/types";
+import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE } from "./shape.const";
+import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
 const ChipShapeSizeRestrictions: ShapeSizeRestrictions = {
   minWidth: 40,
   minHeight: 28,
@@ -34,9 +32,11 @@ export const ChipShape = forwardRef<any, ShapeProps>((props, ref) => {
     height
   );
   const { width: restrictedWidth, height: restrictedHeight } = restrictedSize;
-  const stroke = otherProps?.stroke || SHAPE_CONSTANTS.DEFAULT_STROKE_COLOR;
-  const fill = otherProps?.fill || "#e0e0e0";
-  const textColor = otherProps?.textColor || SHAPE_CONSTANTS.DEFAULT_TEXT_COLOR;
+  
+  const { stroke, fill, textColor } = useShapeProps(otherProps, {
+    ...BASIC_SHAPE,
+    DEFAULT_FILL_BACKGROUND: "#e0e0e0"
+  });
   return (
     <Group ref={ref} x={x} y={y} {...shapeProps}>
       <Rect
@@ -54,7 +54,7 @@ export const ChipShape = forwardRef<any, ShapeProps>((props, ref) => {
         y={4}
         width={restrictedWidth - 16}
         text={text}
-        fontFamily={SHAPE_CONSTANTS.DEFAULT_FONT_FAMILY}
+        fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
         fontSize={12}
         fill={textColor}
         verticalAlign="middle"

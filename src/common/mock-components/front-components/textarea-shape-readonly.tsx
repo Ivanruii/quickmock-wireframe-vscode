@@ -1,11 +1,9 @@
-import React, { forwardRef } from "react";
+import { forwardRef, useMemo } from "react";
 import { Group, Rect, Text } from "react-konva";
-import {
-  ShapeProps,
-  ShapeSizeRestrictions,
-  SHAPE_CONSTANTS,
-} from "@/common/types";
+import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE } from "./shape.const";
+import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
 const textAreaShapeRestrictions: ShapeSizeRestrictions = {
   minWidth: 50,
   minHeight: 44,
@@ -34,11 +32,11 @@ export const TextAreaShape = forwardRef<any, ShapeProps>((props, ref) => {
     height
   );
   const { width: restrictedWidth, height: restrictedHeight } = restrictedSize;
-  const stroke = otherProps?.stroke || SHAPE_CONSTANTS.DEFAULT_STROKE_COLOR;
-  const fill = otherProps?.fill || SHAPE_CONSTANTS.DEFAULT_FILL_COLOR;
-  const textColor = otherProps?.textColor || SHAPE_CONSTANTS.DEFAULT_TEXT_COLOR;
-  const borderRadius =
-    otherProps?.borderRadius || SHAPE_CONSTANTS.DEFAULT_BORDER_RADIUS;
+  
+  const { stroke, fill, textColor, borderRadius, fontSize } = useShapeProps(
+    otherProps,
+    BASIC_SHAPE
+  );
   return (
     <Group ref={ref} x={x} y={y} {...shapeProps}>
       <Rect
@@ -51,16 +49,15 @@ export const TextAreaShape = forwardRef<any, ShapeProps>((props, ref) => {
         fill={fill}
         cornerRadius={borderRadius}
       />
-      <Text
-        x={10}
-        y={10}
+            <Text
+        x={5}
+        y={5}
+        width={restrictedWidth - 10}
+        height={restrictedHeight - 10}
         text={text}
-        fontSize={12}
-        fontFamily={SHAPE_CONSTANTS.DEFAULT_FONT_FAMILY}
+        fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
+        fontSize={fontSize}
         fill={textColor}
-        width={restrictedWidth - 20}
-        height={restrictedHeight - 20}
-        wrap="word"
       />
     </Group>
   );

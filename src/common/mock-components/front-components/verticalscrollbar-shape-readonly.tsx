@@ -1,11 +1,9 @@
-import React, { forwardRef } from "react";
-import { Group, Line, Rect } from "react-konva";
-import {
-  ShapeProps,
-  ShapeSizeRestrictions,
-  SHAPE_CONSTANTS,
-} from "@/common/types";
+import { forwardRef } from "react";
+import { Group, Rect, Line } from "react-konva";
+import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE } from "./shape.const";
+import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
 const VerticalScrollBarShapeSizeRestrictions: ShapeSizeRestrictions = {
   minWidth: 10,
   minHeight: 100,
@@ -39,7 +37,8 @@ export const VerticalScrollBarShape = forwardRef<any, ShapeProps>(
     const thumbHeight = restrictedHeight * 0.3;
     const thumbY =
       arrowHeight + (restrictedHeight - thumbHeight - arrowHeight * 2) / 2;
-    const stroke = otherProps?.stroke || SHAPE_CONSTANTS.DEFAULT_STROKE_COLOR;
+
+    const { stroke } = useShapeProps(otherProps, BASIC_SHAPE);
     const fill = otherProps?.fill || "#f0f0f0";
     return (
       <Group ref={ref} x={x} y={y} {...shapeProps}>
@@ -103,14 +102,14 @@ export const VerticalScrollBarShape = forwardRef<any, ShapeProps>(
         />
         {/* Thumb */}
         <Rect
-          x={2}
+          x={0}
           y={thumbY}
-          width={restrictedWidth - 4}
+          width={restrictedWidth}
           height={thumbHeight}
           fill="#c0c0c0"
           stroke={stroke}
           strokeWidth={1}
-          cornerRadius={2}
+          cornerRadius={1}
         />
       </Group>
     );

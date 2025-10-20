@@ -1,10 +1,10 @@
 import React from "react";
-import { Shape } from "@/core/model";
+import { ShapeModel } from "@/core/model";
 import { ShapeRendererProps } from "../model";
 import { VerticalScrollBarShape } from "@/common/mock-components/front-components/verticalscrollbar-shape-readonly";
 
 export const renderVerticalScrollBar = (
-  shape: Shape,
+  shape: ShapeModel,
   shapeRenderedProps: ShapeRendererProps
 ) => {
   return (

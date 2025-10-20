@@ -1,10 +1,10 @@
 import React from "react";
 import { Group, Rect, Text } from "react-konva";
-import { Shape } from "@/core/model";
+import { ShapeModel } from "@/core/model";
 import { ShapeRendererProps } from "../model";
 
 export const renderNotFound = (
-  shape: Shape,
+  shape: ShapeModel,
   shapeRenderedProps: ShapeRendererProps
 ) => {
   return (

@@ -1,10 +1,10 @@
 import React from "react";
-import { Shape } from "@/core/model";
+import { ShapeModel } from "@/core/model";
 import { ShapeRendererProps } from "../model";
 import { AccordionShape } from "@/common/mock-components/front-rich-components/accordion-readonly";
 
 export const renderAccordion = (
-  shape: Shape,
+  shape: ShapeModel,
   shapeRenderedProps: ShapeRendererProps
 ) => {
   const { x, y, width, height, text, otherProps } = shape;

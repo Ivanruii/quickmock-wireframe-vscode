@@ -1,11 +1,9 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { Group, Rect, Circle } from "react-konva";
-import {
-  ShapeProps,
-  ShapeSizeRestrictions,
-  SHAPE_CONSTANTS,
-} from "@/common/types";
+import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE } from "./shape.const";
+import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
 const toggleSwitchShapeRestrictions: ShapeSizeRestrictions = {
   minWidth: 50,
   minHeight: 25,
@@ -16,7 +14,7 @@ const toggleSwitchShapeRestrictions: ShapeSizeRestrictions = {
 };
 export const getToggleSwitchShapeSizeRestrictions = (): ShapeSizeRestrictions =>
   toggleSwitchShapeRestrictions;
-export const ToggleSwitch = forwardRef<any, ShapeProps>((props, ref) => {
+export const ToggleSwitchShape = forwardRef<any, ShapeProps>((props, ref) => {
   const {
     x,
     y,
@@ -34,8 +32,9 @@ export const ToggleSwitch = forwardRef<any, ShapeProps>((props, ref) => {
     height
   );
   const { width: restrictedWidth, height: restrictedHeight } = restrictedSize;
-  const isOn = otherProps?.isOn || false;
-  const stroke = otherProps?.stroke || "black";
+  
+  const { isOn, stroke } = useShapeProps(otherProps, BASIC_SHAPE);
+  
   const circleX = isOn
     ? restrictedWidth - restrictedHeight / 2
     : restrictedHeight / 2;

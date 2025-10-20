@@ -1,10 +1,10 @@
 import React from "react";
-import { Shape } from "@/core/model";
+import { ShapeModel } from "@/core/model";
 import { ShapeRendererProps } from "../model";
-import { ListBoxShape } from "@/common/mock-components/front-components/index";
+import { ListBoxShape } from "@/common/mock-components/front-components/listbox-shape-readonly";
 
 export const renderListbox = (
-  shape: Shape,
+  shape: ShapeModel,
   shapeRenderedProps: ShapeRendererProps
 ) => {
   return (
@@ -14,7 +14,7 @@ export const renderListbox = (
       y={shape.y}
       width={shape.width}
       height={shape.height}
-      text={shape.text}
+      text={shape.text || "[*]Item 1\nItem 2\nItem 3\nItem 4"}
       otherProps={shape.otherProps || {}}
     />
   );

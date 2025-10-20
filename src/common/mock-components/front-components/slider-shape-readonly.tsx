@@ -1,11 +1,9 @@
-import React, { forwardRef, useMemo } from "react";
-import { Group, Line, Circle } from "react-konva";
-import {
-  ShapeProps,
-  ShapeSizeRestrictions,
-  SHAPE_CONSTANTS,
-} from "@/common/types";
+import { forwardRef, useMemo } from "react";
+import { Group, Rect, Circle, Line } from "react-konva";
+import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE } from "./shape.const";
+import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
 const sliderShapeRestrictions: ShapeSizeRestrictions = {
   minWidth: 100,
   minHeight: 20,
@@ -38,8 +36,10 @@ export const SliderShape = forwardRef<any, ShapeProps>((props, ref) => {
   const thumbRadius = 10;
   const sliderStart = thumbRadius;
   const sliderEnd = restrictedWidth - thumbRadius;
+  
+  const { progress } = useShapeProps(otherProps, BASIC_SHAPE);
   const fill = otherProps?.fill || "#007ACC";
-  const progress = otherProps?.progress || 50; // 0-100
+  
   const thumbPosition = useMemo(() => {
     const range = sliderEnd - sliderStart;
     return sliderStart + (progress / 100) * range;

@@ -1,11 +1,9 @@
-import React, { forwardRef } from "react";
-import { Group, Rect, Text } from "react-konva";
-import {
-  ShapeProps,
-  ShapeSizeRestrictions,
-  SHAPE_CONSTANTS,
-} from "@/common/types";
+import { forwardRef } from "react";
+import { Group, Rect, Text, Path } from "react-konva";
+import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE } from "./shape.const";
+import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
 const datepickerInputShapeRestrictions: ShapeSizeRestrictions = {
   minWidth: 38,
   minHeight: 38,
@@ -35,12 +33,9 @@ export const DatepickerInputShape = forwardRef<any, ShapeProps>(
       height
     );
     const { width: restrictedWidth, height: restrictedHeight } = restrictedSize;
-    const stroke = otherProps?.stroke || SHAPE_CONSTANTS.DEFAULT_STROKE_COLOR;
-    const fill = otherProps?.fill || SHAPE_CONSTANTS.DEFAULT_FILL_COLOR;
-    const textColor =
-      otherProps?.textColor || SHAPE_CONSTANTS.DEFAULT_TEXT_COLOR;
-    const borderRadius =
-      otherProps?.borderRadius || SHAPE_CONSTANTS.DEFAULT_BORDER_RADIUS;
+    
+    const { stroke, fill, textColor, borderRadius } = useShapeProps(otherProps, BASIC_SHAPE);
+    
     const iconWidth = 20;
     return (
       <Group ref={ref} x={x} y={y} {...shapeProps}>
@@ -59,7 +54,7 @@ export const DatepickerInputShape = forwardRef<any, ShapeProps>(
           y={10}
           width={restrictedWidth - iconWidth - 20}
           text={text}
-          fontFamily={SHAPE_CONSTANTS.DEFAULT_FONT_FAMILY}
+          fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
           fontSize={16}
           lineHeight={1.25}
           fill={textColor}

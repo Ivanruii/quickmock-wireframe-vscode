@@ -1,5 +1,5 @@
 import React from "react";
-import { Shape } from "@/core/model";
+import { ShapeModel } from "@/core/model";
 
 export interface ShapeRendererProps {
   handleSelected?: (shapeId: string) => void;
@@ -9,6 +9,6 @@ export interface ShapeRendererProps {
 }
 
 export type ShapeRenderer = (
-  shape: Shape,
+  shape: ShapeModel,
   shapeRenderedProps: ShapeRendererProps
 ) => React.JSX.Element;

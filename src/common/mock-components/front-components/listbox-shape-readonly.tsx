@@ -1,11 +1,68 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import { ShapeSizeRestrictions, ShapeProps } from "@/common/types";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { Group, Rect, Text } from "react-konva";
-import {
-  ShapeProps,
-  ShapeSizeRestrictions,
-  SHAPE_CONSTANTS,
-} from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE, DISABLED_COLOR_VALUES } from "./shape.const";
+import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
+
+const mapListboxTextToItems = (text: string) => {
+  const lines = text.split("\n");
+  const items: string[] = [];
+  let selectedItemIndex = 0;
+
+  lines.forEach((line, index) => {
+    if (line.startsWith("[*]")) {
+      selectedItemIndex = index;
+      items.push(line.substring(3)); // Remove [*] marker
+    } else {
+      items.push(line);
+    }
+  });
+
+  return { items, selectedItemIndex };
+};
+
+const calculateDynamicContentSizeRestriction = (
+  items: string[],
+  config: {
+    width: number;
+    height: number;
+    singleHeaderHeight: number;
+    listboxShapeSizeRestrictions: ShapeSizeRestrictions;
+  }
+) => {
+  const { width, height, singleHeaderHeight, listboxShapeSizeRestrictions } =
+    config;
+
+  const calculatedHeight = Math.max(
+    items.length * singleHeaderHeight + 20,
+    listboxShapeSizeRestrictions.minHeight
+  );
+
+  return fitSizeToShapeSizeRestrictions(
+    {
+      ...listboxShapeSizeRestrictions,
+      defaultHeight: calculatedHeight,
+    },
+    width,
+    height
+  );
+};
+
+const useGroupShapeProps = (
+  props: ShapeProps,
+  restrictedSize: { width: number; height: number },
+  shapeType: string,
+  ref: any
+) => {
+  const { x, y } = props;
+  return {
+    ref,
+    x,
+    y,
+  };
+};
+
 const listboxShapeSizeRestrictions: ShapeSizeRestrictions = {
   minWidth: 75,
   minHeight: 200,
@@ -16,7 +73,17 @@ const listboxShapeSizeRestrictions: ShapeSizeRestrictions = {
 };
 export const getListboxShapeSizeRestrictions = (): ShapeSizeRestrictions =>
   listboxShapeSizeRestrictions;
-export const ListBoxShape = forwardRef<any, ShapeProps>((props, ref) => {
+
+interface ListBoxShapeProps extends ShapeProps {
+  text: string;
+  onSelected?: (id: string, type: string) => void;
+}
+
+const singleHeaderHeight = 35;
+
+const shapeType = "listbox";
+
+export const ListBoxShape = forwardRef<any, ListBoxShapeProps>((props, ref) => {
   const {
     x,
     y,
@@ -24,85 +91,116 @@ export const ListBoxShape = forwardRef<any, ShapeProps>((props, ref) => {
     height,
     id,
     onSelected,
-    text = "[*]Item 1\nItem 2\nItem 3\nItem 4",
+    text,
     otherProps,
     ...shapeProps
   } = props;
-  const [selectedItem, setSelectedItem] = useState<number>(0);
-  const [listboxItems, setListboxItems] = useState<string[]>([]);
+  const [selectedItem, setSelectedItem] = useState<number | null>(null);
+  const [listboxItems, setListboxItem] = useState<string[]>([
+    "[*]Item\nItem1\nItem2\nItem3\nItem4\nItem5\nItem6",
+  ]);
+  const rectRef = useRef<any>(null);
+  const listRef = useRef<any>(null);
+
   useEffect(() => {
     if (text) {
-      const lines = text.split("\n");
-      const items: string[] = [];
-      let selectedIndex = 0;
-      lines.forEach((line, index) => {
-        if (line.startsWith("[*]")) {
-          selectedIndex = index;
-          items.push(line.substring(3)); // Remove [*] marker
-        } else {
-          items.push(line);
-        }
-      });
-      setListboxItems(items);
-      setSelectedItem(selectedIndex);
+      const { items, selectedItemIndex } = mapListboxTextToItems(text);
+      setListboxItem(items);
+      setSelectedItem(selectedItemIndex);
+    } else {
+      setListboxItem([]);
     }
   }, [text]);
-  const restrictedSize = fitSizeToShapeSizeRestrictions(
-    listboxShapeSizeRestrictions,
+
+  const restrictedSize = calculateDynamicContentSizeRestriction(listboxItems, {
     width,
-    height
-  );
+    height,
+    singleHeaderHeight,
+    listboxShapeSizeRestrictions,
+  });
+
   const { width: restrictedWidth, height: restrictedHeight } = restrictedSize;
-  const stroke = otherProps?.stroke || SHAPE_CONSTANTS.DEFAULT_STROKE_COLOR;
-  const fill = otherProps?.fill || SHAPE_CONSTANTS.DEFAULT_FILL_COLOR;
-  const textColor = otherProps?.textColor || SHAPE_CONSTANTS.DEFAULT_TEXT_COLOR;
-  const itemHeight = 25;
+  const {
+    stroke,
+    strokeStyle,
+    fill,
+    borderRadius,
+    textColor,
+    selectedBackgroundColor,
+    disabled,
+  } = useShapeProps(otherProps, BASIC_SHAPE);
+
+  const commonGroupProps = useGroupShapeProps(
+    props,
+    restrictedSize,
+    shapeType,
+    ref
+  );
+
+  const calculateItemBackground = (index: number) => {
+    if (disabled) {
+      return selectedItem === index
+        ? DISABLED_COLOR_VALUES.DEFAULT_STROKE_COLOR
+        : DISABLED_COLOR_VALUES.DEFAULT_BACKGROUND_COLOR;
+    }
+
+    return selectedItem === index ? selectedBackgroundColor : fill;
+  };
+
+  const calculateItemStroke = (index: number) => {
+    if (disabled && selectedItem === index)
+      return DISABLED_COLOR_VALUES.DEFAULT_STROKE_COLOR;
+
+    return selectedItem === index ? selectedBackgroundColor : "transparent";
+  };
+
   return (
-    <Group ref={ref} x={x} y={y} {...shapeProps}>
-      {/* Listbox background */}
+    <Group {...commonGroupProps} {...shapeProps}>
+      {/* Listbox Item rectanble */}
       <Rect
-        x={0}
-        y={0}
-        width={restrictedWidth}
-        height={restrictedHeight}
-        fill={fill}
-        stroke={stroke}
-        strokeWidth={1}
-        cornerRadius={SHAPE_CONSTANTS.DEFAULT_BORDER_RADIUS}
+        x={-10}
+        y={-10}
+        width={restrictedWidth + 20}
+        height={restrictedHeight + 20}
+        ref={rectRef}
+        cornerRadius={borderRadius}
+        stroke={disabled ? DISABLED_COLOR_VALUES.DEFAULT_STROKE_COLOR : stroke}
+        strokeWidth={2}
+        dash={strokeStyle}
+        fill={disabled ? DISABLED_COLOR_VALUES.DEFAULT_BACKGROUND_COLOR : fill}
       />
-      {/* List items */}
-      {listboxItems.map((item, index) => {
-        const isSelected = index === selectedItem;
-        const itemY = index * itemHeight;
-        return (
+
+      {/* Listbox Items */}
+      <Group ref={listRef}>
+        {listboxItems.map((item, index) => (
           <Group key={index}>
-            {/* Item background */}
             <Rect
-              x={2}
-              y={itemY + 2}
-              width={restrictedWidth - 4}
-              height={itemHeight - 1}
-              fill={isSelected ? "#007ACC" : "transparent"}
-              cornerRadius={2}
+              x={0}
+              y={0 + index * singleHeaderHeight}
+              width={restrictedWidth}
+              height={singleHeaderHeight}
+              fill={calculateItemBackground(index)}
+              stroke={calculateItemStroke(index)}
+              strokeWidth={selectedItem === index ? 1 : 0}
+              cornerRadius={borderRadius}
             />
-            {/* Item text */}
             <Text
-              x={8}
-              y={itemY + 5}
-              width={restrictedWidth - 16}
-              height={itemHeight - 10}
+              x={10}
+              y={0 + index * singleHeaderHeight + 12}
               text={item}
-              fontFamily={SHAPE_CONSTANTS.DEFAULT_FONT_FAMILY}
-              fontSize={12}
-              fill={isSelected ? "white" : textColor}
-              align="left"
-              verticalAlign="middle"
-              ellipsis={true}
+              width={restrictedWidth - 10}
+              height={singleHeaderHeight - 12}
+              fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
+              fontSize={15}
+              fill={
+                disabled ? DISABLED_COLOR_VALUES.DEFAULT_TEXT_COLOR : textColor
+              }
               wrap="none"
+              ellipsis={true}
             />
           </Group>
-        );
-      })}
+        ))}
+      </Group>
     </Group>
   );
 });

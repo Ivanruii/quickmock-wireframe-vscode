@@ -1,10 +1,10 @@
 import React from "react";
 import { Group, Rect, Text, Line } from "react-konva";
-import { Shape } from "@/core/model";
+import { ShapeModel } from "@/core/model";
 import { ShapeRendererProps } from "../model";
 
 export const renderCheckbox = (
-  shape: Shape,
+  shape: ShapeModel,
   shapeRenderedProps: ShapeRendererProps
 ) => {
   const checkboxSize = Math.min(shape.height - 4, 16);
