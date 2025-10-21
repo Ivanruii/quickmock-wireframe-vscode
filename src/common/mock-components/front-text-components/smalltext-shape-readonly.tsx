@@ -2,6 +2,8 @@ import { forwardRef } from "react";
 import { Group, Text } from "react-konva";
 import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
+import { BASIC_SHAPE } from "../front-components/shape.const";
 
 const smalltextSizeRestrictions: ShapeSizeRestrictions = {
   minWidth: 40,
@@ -25,13 +27,14 @@ export const SmalltextShape = forwardRef<any, ShapeProps>((props, ref) => {
   );
   const { width: restrictedWidth, height: restrictedHeight } = restrictedSize;
 
-  const textColor = otherProps?.textColor || "black";
-  const textDecoration = otherProps?.textDecoration || "none";
-  const fontStyle = otherProps?.fontStyle || "normal";
-  const fontVariant = otherProps?.fontVariant || "normal";
-  const fontSize = otherProps?.fontSize || 12;
-  const textAlignment = otherProps?.textAlignment || "left";
-  const fontFamily = otherProps?.fontFamily || "Arial, sans-serif";
+  const {
+    textColor,
+    textDecoration,
+    fontStyle,
+    fontVariant,
+    fontSize,
+    textAlignment,
+  } = useShapeProps(otherProps, BASIC_SHAPE);
 
   return (
     <Group ref={ref} x={x} y={y} {...restProps} {...otherProps}>
@@ -41,7 +44,7 @@ export const SmalltextShape = forwardRef<any, ShapeProps>((props, ref) => {
         width={restrictedWidth}
         height={restrictedHeight}
         text={text}
-        fontFamily={fontFamily}
+        fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
         fontSize={fontSize}
         fill={textColor}
         align={textAlignment}
