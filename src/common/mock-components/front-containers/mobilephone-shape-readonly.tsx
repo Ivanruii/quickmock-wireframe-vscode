@@ -2,6 +2,7 @@ import { forwardRef, useEffect, useState } from "react";
 import { Group, Rect, Circle, Text, Path } from "react-konva";
 import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE } from "../front-components/shape.const";
 
 const wifiPath =
   "M138 204a10 10 0 1 1-10-10a10 10 0 0 1 10 10m97.81-115.45a170 170 0 0 0-215.62 0a6 6 0 1 0 7.62 9.27a158 158 0 0 1 200.38 0a6 6 0 1 0 7.62-9.27m-32.08 35.79a122 122 0 0 0-151.46 0a6 6 0 0 0 7.46 9.41a110 110 0 0 1 136.54 0A6 6 0 0 0 200 135a6 6 0 0 0 3.73-10.7Zm-32.2 35.81a74 74 0 0 0-87.06 0a6 6 0 0 0 7.06 9.7a62 62 0 0 1 72.94 0a6 6 0 0 0 8.38-1.32a6 6 0 0 0-1.32-8.38";
@@ -144,7 +145,7 @@ export const MobilePhoneShape = forwardRef<any, ShapeProps>((props, ref) => {
         width={timeWidth}
         height={adornerIconSize}
         text={currentTime}
-        fontFamily="Arial"
+        fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
         fontSize={14}
         wrap="none"
       />
@@ -167,7 +168,7 @@ export const MobilePhoneShape = forwardRef<any, ShapeProps>((props, ref) => {
           width={restrictedWidth - 2 * margin - 2 * screenMargin - 20}
           height={restrictedHeight - 2 * margin - 8 * screenMargin}
           text={text}
-          fontFamily="Arial"
+          fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
           fontSize={14}
           fill="black"
           wrap="word"

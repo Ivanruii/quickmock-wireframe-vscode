@@ -2,6 +2,7 @@ import { forwardRef } from "react";
 import { Group, Rect, Circle, Text } from "react-konva";
 import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE } from "../front-components/shape.const";
 
 const browserWindowShapeSizeRestrictions: ShapeSizeRestrictions = {
   minWidth: 200,
@@ -106,7 +107,7 @@ export const BrowserWindowShape = forwardRef<any, ShapeProps>((props, ref) => {
         width={restrictedWidth - margin * 7}
         height={urlBarHeight}
         text={text}
-        fontFamily="Arial"
+        fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
         fontSize={12}
         fill="black"
         ellipsis={true}

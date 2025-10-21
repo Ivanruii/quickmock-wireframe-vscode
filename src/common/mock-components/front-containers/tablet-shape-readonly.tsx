@@ -2,6 +2,7 @@ import { forwardRef } from "react";
 import { Group, Rect, Circle, Text } from "react-konva";
 import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE } from "../front-components/shape.const";
 
 const tabletShapeSizeRestrictions: ShapeSizeRestrictions = {
   minWidth: 200,
@@ -84,7 +85,7 @@ export const TabletShape = forwardRef<any, ShapeProps>((props, ref) => {
           width={restrictedWidth - 2 * margin - 2 * screenMargin - 20}
           height={restrictedHeight - 2 * margin - 2 * screenMargin - 20}
           text={text}
-          fontFamily="Arial"
+          fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
           fontSize={16}
           fill="black"
           wrap="word"

@@ -2,6 +2,7 @@ import { forwardRef } from "react";
 import { Group, Rect, Text } from "react-konva";
 import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
 import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { BASIC_SHAPE } from "../front-components/shape.const";
 
 const modalDialogShapeSizeRestrictions: ShapeSizeRestrictions = {
   minWidth: 250,
@@ -57,7 +58,7 @@ export const ModalDialogContainer = forwardRef<any, ShapeProps>(
           x={margin * 3}
           y={margin * 2}
           text={text || "Modal Dialog"}
-          fontFamily="Arial"
+          fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
           fontSize={12}
           fill="black"
           ellipsis={true}
