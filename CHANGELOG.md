@@ -23,3 +23,7 @@ All notable changes to the QuickMock Wireframe Viewer extension.
 
 - Minor bug fixes
 - Prepare for marketplace publication
+
+## [0.2.0] - 2025-11-05
+
+- Fixed multiple components to fit QuickMock styles.
