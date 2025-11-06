@@ -1,19 +1,27 @@
 import { forwardRef } from "react";
 import { Group, Rect, Text } from "react-konva";
-import { ShapeProps, ShapeSizeRestrictions } from "@/common/types";
-import { fitSizeToShapeSizeRestrictions } from "@/common/utils";
+import { ShapeProps } from "@/common/types";
 import { BASIC_SHAPE } from "./shape.const";
 import { useShapeProps } from "@/common/hooks/use-shape-props.hook";
-const iconShapeRestrictions: ShapeSizeRestrictions = {
-  minWidth: 25,
-  minHeight: 25,
-  maxWidth: -1,
-  maxHeight: -1,
-  defaultWidth: 150,
-  defaultHeight: 150,
+import { IconSize } from "@/core/model";
+
+export const returnIconSize = (iconSize: IconSize): number[] => {
+  switch (iconSize) {
+    case 'XS':
+      return [25, 25];
+    case 'S':
+      return [50, 50];
+    case 'M':
+      return [100, 100];
+    case 'L':
+      return [125, 125];
+    case 'XL':
+      return [150, 150];
+    default:
+      return [50, 50];
+  }
 };
-export const getIconShapeSizeRestrictions = (): ShapeSizeRestrictions =>
-  iconShapeRestrictions;
+
 export const IconShape = forwardRef<any, ShapeProps>((props, ref) => {
   const {
     x,
@@ -26,41 +34,37 @@ export const IconShape = forwardRef<any, ShapeProps>((props, ref) => {
     otherProps,
     ...shapeProps
   } = props;
-  const restrictedSize = fitSizeToShapeSizeRestrictions(
-    iconShapeRestrictions,
-    width,
-    height
-  );
-  const { width: restrictedWidth, height: restrictedHeight } = restrictedSize;
-  
-  const { stroke, fill, textColor, borderRadius } = useShapeProps(
+  const { stroke, fill, textColor, fontSize } = useShapeProps(
     otherProps,
     BASIC_SHAPE
   );
+
+  const [iconWidth, iconHeight] = returnIconSize(otherProps?.icon?.size || 'M');
   
-  const iconName = otherProps?.icon || "🏠"; // Default house icon
+  const iconName = otherProps?.icon?.name || "🏠";
+
   return (
     <Group ref={ref} x={x} y={y} {...shapeProps}>
       {/* Icon background */}
       <Rect
         x={0}
         y={0}
-        width={restrictedWidth}
-        height={restrictedHeight}
+        width={iconWidth}
+        height={iconHeight}
         fill={fill}
         stroke={stroke}
         strokeWidth={1}
-        cornerRadius={borderRadius}
+        cornerRadius={50}
       />
-      {/* Icon placeholder - using emoji */}
-            <Text
+      {/* TODO: Add icon representation */}
+      <Text
         x={0}
         y={0}
-        width={restrictedWidth}
-        height={restrictedHeight}
-        text={iconName}
+        width={iconWidth}
+        height={iconHeight}
+        text={`${iconName}: icons are not supported yet`}
         fontFamily={BASIC_SHAPE.DEFAULT_FONT_FAMILY}
-        fontSize={16}
+        fontSize={fontSize}
         fill={textColor}
         align="center"
         verticalAlign="middle"
