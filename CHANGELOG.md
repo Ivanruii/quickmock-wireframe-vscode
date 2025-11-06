@@ -27,3 +27,7 @@ All notable changes to the QuickMock Wireframe Viewer extension.
 ## [0.2.0] - 2025-11-05
 
 - Fixed multiple components to fit QuickMock styles.
+
+## [0.2.1] - 2025-11-06
+
+- Improved icon representation before the final implementation.
