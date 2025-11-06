@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Canvas } from "./components/Canvas";
-import { Header } from "./components/Header";
+import { Canvas } from "./components/canvas.component";
+import { Header } from "./components/header.component";
 import { QuickMockDocument } from "@/core/model";
 
 declare global {
