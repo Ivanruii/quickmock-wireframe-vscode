@@ -2,7 +2,7 @@
   "name": "quickmock-wireframe-vscode",
   "displayName": "QuickMock Wireframe Viewer",
   "description": "VSCode extension for viewing QuickMock (.qm) low-fidelity UI wireframes",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "icon": "assets/quickmock-logo.png",
   "publisher": "Ivanruii",
   "repository": {
