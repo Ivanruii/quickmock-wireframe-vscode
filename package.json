@@ -10,7 +10,7 @@
     "url": "https://github.com/Ivanruii/quickmock-wireframe-vscode"
   },
   "engines": {
-    "vscode": "^1.105.0"
+    "vscode": "^1.90.0"
   },
   "categories": [
     "Visualization",
